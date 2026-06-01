@@ -8,7 +8,6 @@ const initialForm = { name: '', sku: '', price: '', quantity: '' };
 export default function ProductPage() {
   const [products, setProducts] = useState([]);
   const [form, setForm] = useState(initialForm);
-  const [editing, setEditing] = useState(null);
   const [status, setStatus] = useState('');
   const [query, setQuery] = useState('');
   const [view, setView] = useState('table');
@@ -41,31 +40,14 @@ export default function ProductPage() {
         quantity: Number(form.quantity),
       };
 
-      if (editing) {
-        await api.put(`/products/${editing.id}`, payload);
-        setStatus('Product updated successfully.');
-      } else {
-        await api.post('/products', payload);
-        setStatus('Product created successfully.');
-      }
+      await api.post('/products', payload);
+      setStatus('Product created successfully.');
 
       setForm(initialForm);
-      setEditing(null);
       loadProducts();
     } catch (error) {
       setStatus(error.response?.data?.detail || 'Failed to save product');
     }
-  }
-
-  function startEdit(product) {
-    setEditing(product);
-    setForm({
-      name: product.name,
-      sku: product.sku,
-      price: product.price,
-      quantity: product.quantity,
-    });
-    setStatus('');
   }
 
   async function removeProduct(id) {
@@ -76,6 +58,19 @@ export default function ProductPage() {
       loadProducts();
     } catch (error) {
       setStatus(error.response?.data?.detail || 'Failed to delete product');
+    }
+  }
+
+  async function adjustStock(product, delta) {
+    const nextQuantity = product.quantity + delta;
+    if (nextQuantity < 0) return;
+
+    try {
+      await api.put(`/products/${product.id}`, { quantity: nextQuantity });
+      setStatus(`Stock updated for ${product.name}.`);
+      loadProducts();
+    } catch (error) {
+      setStatus(error.response?.data?.detail || 'Failed to update stock');
     }
   }
 
@@ -99,7 +94,7 @@ export default function ProductPage() {
         <motion.form className="panel form side-form premium-form" onSubmit={handleSubmit} initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}>
           <div className="form-title">
             <span><PackagePlus size={18} /></span>
-            <h3>{editing ? 'Edit Product' : 'Add Product'}</h3>
+            <h3>Add Product</h3>
           </div>
           <div className="form-grid single">
             <label>Name
@@ -116,8 +111,7 @@ export default function ProductPage() {
             </label>
           </div>
           <div className="button-row">
-            <button type="submit">{editing ? 'Update' : 'Add'} Product</button>
-            {editing && <button className="secondary" type="button" onClick={() => { setEditing(null); setForm(initialForm); setStatus(''); }}>Cancel</button>}
+            <button type="submit">Add Product</button>
           </div>
         </motion.form>
 
@@ -147,10 +141,13 @@ export default function ProductPage() {
                 </div>
                 <div className="product-meta">
                   <strong>${product.price.toFixed(2)}</strong>
-                  <span className={product.quantity <= 5 ? 'stock-badge low' : 'stock-badge'}>{product.quantity} in stock</span>
+                  <div className="stock-control">
+                    <button type="button" onClick={() => adjustStock(product, -1)} disabled={product.quantity === 0}>-</button>
+                    <span className={product.quantity <= 5 ? 'stock-badge low' : 'stock-badge'}>{product.quantity}</span>
+                    <button type="button" onClick={() => adjustStock(product, 1)}>+</button>
+                  </div>
                 </div>
                 <div className="actions">
-                  <button className="small" onClick={() => startEdit(product)}>Edit</button>
                   <button className="small danger" onClick={() => removeProduct(product.id)}>Delete</button>
                 </div>
               </motion.div>
@@ -174,9 +171,14 @@ export default function ProductPage() {
                   <td className="strong">{product.name}</td>
                   <td><span className="code">{product.sku}</span></td>
                   <td>${product.price.toFixed(2)}</td>
-                  <td><span className={product.quantity <= 5 ? 'stock-badge low' : 'stock-badge'}>{product.quantity}</span></td>
+                  <td>
+                    <div className="stock-control">
+                      <button type="button" onClick={() => adjustStock(product, -1)} disabled={product.quantity === 0}>-</button>
+                      <span className={product.quantity <= 5 ? 'stock-badge low' : 'stock-badge'}>{product.quantity}</span>
+                      <button type="button" onClick={() => adjustStock(product, 1)}>+</button>
+                    </div>
+                  </td>
                   <td className="actions">
-                    <button className="small" onClick={() => startEdit(product)}>Edit</button>
                     <button className="small danger" onClick={() => removeProduct(product.id)}>Delete</button>
                   </td>
                 </tr>
