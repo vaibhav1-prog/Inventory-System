@@ -132,16 +132,18 @@ export default function OrderPage() {
                 onChange={(e) => handleItemChange(index, 'quantity', e.target.value)}
                 required
               />
-              <button type="button" onClick={() => removeItemRow(index)}>
+              <button className="secondary" type="button" onClick={() => removeItemRow(index)}>
                 Remove
               </button>
             </div>
           ))}
         </div>
-        <button type="button" onClick={addItemRow} className="secondary">
-          Add Product
-        </button>
-        <button type="submit">Create Order</button>
+        <div className="button-row form-actions">
+          <button type="button" onClick={addItemRow} className="secondary">
+            Add Product
+          </button>
+          <button type="submit">Create Order</button>
+        </div>
       </motion.form>
 
       <section className="panel data-panel">

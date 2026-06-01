@@ -60,22 +60,6 @@
     @apply bg-blue-600 text-white;
   }
 
-  .sidebar-card {
-    @apply mt-8 hidden rounded-lg border border-white/10 bg-white/5 p-4 lg:block;
-  }
-
-  .sidebar-label {
-    @apply text-xs font-black uppercase text-blue-200;
-  }
-
-  .sidebar-card strong {
-    @apply my-2 block text-xl;
-  }
-
-  .sidebar-card p {
-    @apply m-0 text-sm leading-6 text-slate-400;
-  }
-
   .content {
     @apply mx-auto w-full max-w-7xl px-4 py-6 md:px-8;
   }
@@ -256,6 +240,22 @@
     @apply grid grid-cols-1 gap-3;
   }
 
+  .order-item-row button {
+    @apply w-full border border-slate-300 bg-white text-slate-700 hover:bg-slate-100;
+  }
+
+  .form-actions {
+    @apply mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2;
+  }
+
+  .form-actions button {
+    @apply w-full;
+  }
+
+  .form-actions button[type="submit"] {
+    @apply border-blue-600 bg-blue-600 text-white hover:bg-blue-700;
+  }
+
   button,
   .button-link,
   .quick-action {
@@ -263,7 +263,7 @@
   }
 
   button.secondary {
-    @apply bg-slate-600 hover:bg-slate-700;
+    @apply border border-slate-300 bg-white text-slate-700 hover:bg-slate-100;
   }
 
   button.danger {
@@ -273,6 +273,10 @@
   button.small,
   .button-link {
     @apply min-h-9 px-3 text-xs;
+  }
+
+  .side-form button {
+    @apply rounded-lg;
   }
 
   .panel-tools {
@@ -426,6 +430,12 @@
     button,
     .button-link {
       @apply w-full;
+    }
+  }
+
+  @media (min-width: 641px) {
+    .side-form > button {
+      @apply w-auto;
     }
   }
 }

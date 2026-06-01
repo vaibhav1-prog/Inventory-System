@@ -20,11 +20,6 @@ function App() {
             </div>
           </div>
           <NavBar />
-          <div className="sidebar-card">
-            <span className="sidebar-label">System Status</span>
-            <strong>Live</strong>
-            <p>API, database, and web app are connected through Docker.</p>
-          </div>
         </aside>
         <main className="content">
           <TopBar />
