@@ -1,0 +1,15 @@
+node_modules
+build
+dist
+__pycache__
+*.pyc
+*.pyo
+.env
+.env.local
+.env.*.local
+.git
+.gitignore
+.venv
+venv
+.pytest_cache
+*.log
